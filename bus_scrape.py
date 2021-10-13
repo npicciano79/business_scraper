@@ -10,7 +10,8 @@ url="https://www.gnhcc.com/list"
 
 def scrape(url):
     req=requests.get(url)
-    print(req)
+    soup=BeautifulSoup(req.content, 'html5')
+    print(soup)
 
 
 
