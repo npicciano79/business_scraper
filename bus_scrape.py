@@ -14,10 +14,10 @@ def scrape(url):
     
     #find business categories
 
-    cat=soup.find('div',class_="row gz-cards gz-directory-cards gz-no-cards")
+    cat=soup.find('div',class_="row gz-cards gz-directory-cards gz-no-cards").find_all('a')
     print(f"cat--- {cat} ---cat")
-    #test=soup.find("div",class_="row gz-directory-cards gz-no-cards")
-    #print(f"test: {test}")
+    #t=cat.find_all('a')
+    #print(t)
 
 
 
