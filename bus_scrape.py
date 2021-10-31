@@ -4,6 +4,7 @@
 from bs4 import BeautifulSoup
 import csv
 import requests
+import re
 
 
 url="https://www.gnhcc.com/list"
@@ -13,11 +14,14 @@ def scrape(url):
     soup=BeautifulSoup(req.content, 'html5lib')
     
     #find business categories
-
-    cat=soup.find('div',class_="row gz-cards gz-directory-cards gz-no-cards").find_all('a')
-    print(f"cat--- {cat} ---cat")
-    #t=cat.find_all('a')
-    #print(t)
+    links=soup.find('div',class_="row gz-cards gz-directory-cards gz-no-cards").find_all('a')
+    
+    for link in links:
+        l_url=str(link).split("//",0)
+        
+        print(l_url)
+        
+     
 
 
 
