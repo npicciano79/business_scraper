@@ -7,8 +7,38 @@ import requests
 import re
 
 
-url="https://www.gnhcc.com/list"
+def getData(url):
+    page=requests.get(url)
+    #print(f"get data called")
+    return BeautifulSoup(page.text,"html.parser")
 
+def scrape_link(data):
+    for link in data.find('div',class_="row gz-cards gz-directory-cards gz-no-cards").find_all('a'):
+        #lcl_link=link.get("a")
+        print("f{link}:link")
+
+
+
+
+def main():
+    url=f'https://www.gnhcc.com/list'
+    data=getData(url)
+    #print(f"Data: {data}")
+    bus_link=scrape_link(data)
+     
+
+
+
+
+
+
+if __name__=="__main__":
+    main()
+
+
+
+
+"""
 def scrape(url):
     req=requests.get(url)
     soup=BeautifulSoup(req.content, 'html5lib')
@@ -20,13 +50,4 @@ def scrape(url):
         l_url=str(link).split("//",0)
         
         print(l_url)
-        
-     
-
-
-
-
-
-
-if __name__=="__main__":
-    scrape(url)
+"""
