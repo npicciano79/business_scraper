@@ -13,8 +13,11 @@ def getData(url):
     return BeautifulSoup(page.text,"html.parser")
 
 def scrape_link(data):
-    for link in data.find('div',class_="row gz-cards gz-directory-cards gz-no-cards").find_all('a'):
-        #lcl_link=link.get("a")
+    #print(f"{data} data")
+    links=data.find('div',class_="row gz-cards gz-directory-cards gz-no-cards")
+    for link in links.find_all("a"):
+
+        #lcl_link=link.get("href")
         print("f{link}:link")
 
 
