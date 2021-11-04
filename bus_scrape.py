@@ -16,10 +16,8 @@ def scrape_link(data):
     #print(f"{data} data")
     links=data.find('div',class_="row gz-cards gz-directory-cards gz-no-cards")
     for link in links.find_all("a"):
-        
-        print(f"{link}:link")
-        #lcl_link=link.get("href")
-    
+        lcl_link=link.get("href")
+        print(f"{lcl_link}")
 
 
 
