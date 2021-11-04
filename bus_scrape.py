@@ -13,11 +13,25 @@ def getData(url):
     return BeautifulSoup(page.text,"html.parser")
 
 def scrape_link(data):
-    #print(f"{data} data")
-    links=data.find('div',class_="row gz-cards gz-directory-cards gz-no-cards")
-    for link in links.find_all("a"):
-        lcl_link=link.get("href")
-        print(f"{lcl_link}")
+    #returns links for categories
+    links=[]
+    for d in data.find('div',class_="row gz-cards gz-directory-cards gz-no-cards").find_all("a"):
+        lcl_link=d.get("href")
+        links.append(lcl_link)
+        #print(f"{lcl_link}")   
+    return links
+
+def scrape_bus(bus_link):
+    #get category name
+    for bus in bus_link:
+        new_page=requests.get(bus)
+        b_page=BeautifulSoup(new_page.text,"html.parser")
+        
+        
+
+
+
+
 
 
 
@@ -27,6 +41,8 @@ def main():
     data=getData(url)
     #print(f"Data: {data}")
     bus_link=scrape_link(data)
+    #print(f"{bus_link} bus link")
+    scrape_bus(bus_link)
      
 
 
