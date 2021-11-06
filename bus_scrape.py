@@ -35,6 +35,10 @@ def scrape_bus(bus_link):
         category=str(lcl_cat).strip('<h1>').strip('</')
         #input(print(category))
 
+        #get business name
+        lcl_name=b_page.find('div',class_="card gz-results-card gz-web-participation-30 gz-no-logo gz-sponsor").find('a').text
+        input(print(lcl_name))
+
 
 
         #lcl_cat=str(category)
