@@ -26,6 +26,10 @@ def scrape_bus(bus_link):
     for bus in bus_link:
         new_page=requests.get(bus)
         b_page=BeautifulSoup(new_page.text,"html.parser")
+        #get category title
+        category=b_page.find("div",class_="flex-grow-1 gz-pagetitle").find('h1')
+        lcl_cat=str(category)
+        input(print(lcl_cat))
         
         
 
