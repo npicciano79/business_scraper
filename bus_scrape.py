@@ -24,12 +24,21 @@ def scrape_link(data):
 def scrape_bus(bus_link):
     #get category name
     for bus in bus_link:
+        #bus link is category link, scrape page for each link/category 
+        #input(print(bus)) 
         new_page=requests.get(bus)
         b_page=BeautifulSoup(new_page.text,"html.parser")
+        #input(print(b_page))
+        
         #get category title
-        category=b_page.find("div",class_="flex-grow-1 gz-pagetitle").find('h1')
-        lcl_cat=str(category)
-        input(print(lcl_cat))
+        lcl_cat=b_page.find("div",class_="flex-grow-1 gz-pagetitle").find('h1')
+        category=str(lcl_cat).strip('<h1>').strip('</')
+        #input(print(category))
+
+
+
+        #lcl_cat=str(category)
+        
         
         
 
@@ -60,16 +69,3 @@ if __name__=="__main__":
 
 
 
-"""
-def scrape(url):
-    req=requests.get(url)
-    soup=BeautifulSoup(req.content, 'html5lib')
-    
-    #find business categories
-    links=soup.find('div',class_="row gz-cards gz-directory-cards gz-no-cards").find_all('a')
-    
-    for link in links:
-        l_url=str(link).split("//",0)
-        
-        print(l_url)
-"""
