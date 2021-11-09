@@ -33,11 +33,14 @@ def scrape_bus(bus_link):
         #get category title
         lcl_cat=b_page.find("div",class_="flex-grow-1 gz-pagetitle").find('h1')
         category=str(lcl_cat).strip('<h1>').strip('</')
-        #input(print(category))
+        input(print(category))
 
         #get business name
-        lcl_name=b_page.find('div',class_="card gz-results-card gz-web-participation-30 gz-no-logo gz-sponsor").find('a').text
-        input(print(lcl_name))
+        try:
+            lcl_name=b_page.find('div',class_="card gz-results-card gz-web-participation-30 gz-no-logo gz-sponsor").find('a').text
+            input(print(f"name: {lcl_name}"))
+        except Exception as e:
+            print("Name not found",e)
 
 
 
