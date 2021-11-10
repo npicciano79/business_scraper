@@ -37,10 +37,16 @@ def scrape_bus(bus_link):
 
         #get business name
         try:
-            lcl_name=b_page.find('div',class_="card gz-results-card gz-web-participation-30 gz-no-logo gz-sponsor").find('a').text
+            lcl_name=b_page.find('span',class_='gz-img-placeholder').text
             input(print(f"name: {lcl_name}"))
         except Exception as e:
             print("Name not found",e)
+
+        #get business address
+        lcl_address=b_page.find('span',class_='gz-street-address').text
+        input(print(f"address: {lcl_address}"))
+
+        
 
 
 
