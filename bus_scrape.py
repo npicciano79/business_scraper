@@ -35,25 +35,15 @@ def scrape_bus(bus_link):
         category=str(lcl_cat).strip('<h1>').strip('</')
         input(print(category))
 
-        #get business name
-        try:
-            lcl_name=b_page.find('span',class_='gz-img-placeholder').text
-            input(print(f"name: {lcl_name}"))
-        except Exception as e:
-            print("Name not found",e)
+        #get card link 
+        card_link=b_page.find('div',class_='card-header').find('a')
+        card_link=str(card_link).split('=')[2].split(" ")[0].strip('"')
+        
+        
 
-        #get business address
-        lcl_address=b_page.find('span',class_='gz-street-address').text
-        input(print(f"address: {lcl_address}"))
 
-        #get city
-        lcl_city=b_page.find("span",class_="gz-address-city").text
-        input(print(f"city: {lcl_city}"))
 
-        #get zip
-        lcl_zip=b_page.find("div",itemprop="citystatezip")[2]
-        #lcl_zip1=str(lcl_zip).strip('<span>').strip('</')
-        input(print(f"zip: {lcl_zip}"))
+
 
 
 
@@ -89,3 +79,33 @@ if __name__=="__main__":
 
 
 
+"""
+
+
+        #get business name
+        try:
+            lcl_name=b_page.find('span',class_='gz-img-placeholder').text
+            input(print(f"name: {lcl_name}"))
+        except Exception as e:
+            print("Name not found",e)
+
+        #get business address
+        lcl_address=b_page.find('span',class_='gz-street-address').text
+        input(print(f"address: {lcl_address}"))
+
+        #get city
+        lcl_city=b_page.find("span",class_="gz-address-city").text
+        input(print(f"city: {lcl_city}"))
+
+        #get zip
+        lcl_zip=b_page.find("div",itemprop="citystatezip")
+        lcl_zip=str(lcl_zip).split('<span>',3)[2].split('<')[0]
+        input(print(f"zip: {lcl_zip}"))
+
+        #get phone
+        lcl_phone=b_page.find('li', class_="list-group-item gz-card-phone").text
+        input(print(f"phone {lcl_phone}"))
+
+
+
+"""
