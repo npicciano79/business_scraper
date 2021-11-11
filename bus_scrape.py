@@ -46,7 +46,14 @@ def scrape_bus(bus_link):
         lcl_address=b_page.find('span',class_='gz-street-address').text
         input(print(f"address: {lcl_address}"))
 
-        
+        #get city
+        lcl_city=b_page.find("span",class_="gz-address-city").text
+        input(print(f"city: {lcl_city}"))
+
+        #get zip
+        lcl_zip=b_page.find("div",itemprop="citystatezip")[2]
+        #lcl_zip1=str(lcl_zip).strip('<span>').strip('</')
+        input(print(f"zip: {lcl_zip}"))
 
 
 
