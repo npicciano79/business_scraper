@@ -27,19 +27,43 @@ def scrape_bus(bus_link):
         #bus link is category link, scrape page for each link/category 
         #input(print(bus)) 
         new_page=requests.get(bus)
-        b_page=BeautifulSoup(new_page.text,"html.parser")
+        full_page=BeautifulSoup(new_page.text,"html.parser")
         #input(print(b_page))
         
         #get category title
-        lcl_cat=b_page.find("div",class_="flex-grow-1 gz-pagetitle").find('h1')
+        lcl_cat=full_page.find("div",class_="flex-grow-1 gz-pagetitle").find('h1')
         category=str(lcl_cat).strip('<h1>').strip('</')
         input(print(category))
 
         #get card link 
-        card_link=b_page.find('div',class_='card-header').find('a')
+        card_link=full_page.find('div',class_='card-header').find('a')
         card_link=str(card_link).split('=')[2].split(" ")[0].strip('"')
+        input(print(card_link))
         
-        
+        c_page=requests.get(card_link)
+        card_page=BeautifulSoup(c_page.text,"html.parser")
+        input(print(card_page))
+
+        #find business name
+        lcl_name=card_page.find('div',class_="d-flex gz-details-head").text
+        input(print(lcl_name))
+
+        #find address
+        lcl_address=card_page.find('span',class_="gz-street-address").text
+        input(print(lcl_address))
+
+        #find city
+        #lcl_city=card_page.find('span',class_="gz-address-city").text
+        #input(print(lcl_city))
+
+        #find zipcode
+        #lcl_zip=card_page.find_next(lcl_city)
+        #input(print(lcl_zip))
+
+        for item in card_page.find_all('li',class_="list-group-item"):
+            address_data=item.find_next('span').text
+            input(print(address_data))
+
 
 
 
