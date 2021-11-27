@@ -49,20 +49,36 @@ def scrape_bus(bus_link):
         input(print(lcl_name))
 
         #find address
+        lcl_address_full=card_page.find('li',class_="list-group-item gz-card-address").text.splitlines()
+        input(print(lcl_address_full))
+
+        
+        for i,val in enumerate(lcl_address_full):
+            if i==3:
+                lcl_street=val
+            if i==4:
+                lcl_city=val
+            if i==6:
+                lcl_zip=val
+
+
+        print(f"street: {lcl_street} city {lcl_city}  zip {lcl_zip}")
+        """
         lcl_address=card_page.find('span',class_="gz-street-address").text
         input(print(lcl_address))
 
         #find city
-        #lcl_city=card_page.find('span',class_="gz-address-city").text
-        #input(print(lcl_city))
+        lcl_city=card_page.find('span',class_="gz-address-city").text
+        input(print(lcl_city))
 
         #find zipcode
-        #lcl_zip=card_page.find_next(lcl_city)
-        #input(print(lcl_zip))
+        lcl_zip=card_page.find_next('span', class_="gz-address-city")
+        input(print(lcl_zip))
 
-        for item in card_page.find_all('li',class_="list-group-item"):
-            address_data=item.find_next('span').text
-            input(print(address_data))
+        #for item in card_page.find_all('li',class_="list-group-item"):
+            #address_data=item.find_next('span').text
+            #input(print(address_data))
+        """
 
 
 
