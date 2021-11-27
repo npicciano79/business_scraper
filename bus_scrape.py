@@ -33,26 +33,26 @@ def scrape_bus(bus_link):
         #get category title
         lcl_cat=full_page.find("div",class_="flex-grow-1 gz-pagetitle").find('h1')
         category=str(lcl_cat).strip('<h1>').strip('</')
-        input(print(category))
+        input(category)
 
         #get card link 
         card_link=full_page.find('div',class_='card-header').find('a')
         card_link=str(card_link).split('=')[2].split(" ")[0].strip('"')
-        input(print(card_link))
+        input(card_link)
         
         c_page=requests.get(card_link)
         card_page=BeautifulSoup(c_page.text,"html.parser")
-        input(print(card_page))
+        input(card_page)
 
         #find business name
         lcl_name=card_page.find('div',class_="d-flex gz-details-head").text
-        input(print(lcl_name))
+        input(lcl_name)
 
-        #find address
+        #find full address
         lcl_address_full=card_page.find('li',class_="list-group-item gz-card-address").text.splitlines()
-        input(print(lcl_address_full))
+        input(lcl_address_full)
 
-        
+        #split full_address to street, city zip
         for i,val in enumerate(lcl_address_full):
             if i==3:
                 lcl_street=val
@@ -61,33 +61,24 @@ def scrape_bus(bus_link):
             if i==6:
                 lcl_zip=val
 
-
         print(f"street: {lcl_street} city {lcl_city}  zip {lcl_zip}")
-        """
-        lcl_address=card_page.find('span',class_="gz-street-address").text
-        input(print(lcl_address))
 
-        #find city
-        lcl_city=card_page.find('span',class_="gz-address-city").text
-        input(print(lcl_city))
+        lcl_phone=card_page.find('li',class_="list-group-item gz-card-phone").text
+        input(lcl_phone)
 
-        #find zipcode
-        lcl_zip=card_page.find_next('span', class_="gz-address-city")
-        input(print(lcl_zip))
+        lcl_fax=card_page.find('li',class_='list-group-item gz-card-fax').text
+        input(lcl_fax)
 
-        #for item in card_page.find_all('li',class_="list-group-item"):
-            #address_data=item.find_next('span').text
-            #input(print(address_data))
-        """
+        lcl_web=card_page.find('li',class_="list-group-item gz-card-website").find('a').text
+        input(lcl_web)
 
+        lcl_about=card_page.find('div',class_="row gz-details-about").text
+        input(lcl_about)
 
+        lcl_contact=card_page.find('div',class_="gz-member-repname").text
+        input(lcl_contact)
+        
 
-
-
-
-
-
-        #lcl_cat=str(category)
         
         
         
@@ -149,3 +140,22 @@ if __name__=="__main__":
 
 
 """
+
+
+"""
+        find address
+        lcl_address=card_page.find('span',class_="gz-street-address").text
+        input(print(lcl_address))
+
+        #find city
+        lcl_city=card_page.find('span',class_="gz-address-city").text
+        input(print(lcl_city))
+
+        #find zipcode
+        lcl_zip=card_page.find_next('span', class_="gz-address-city")
+        input(print(lcl_zip))
+
+        #for item in card_page.find_all('li',class_="list-group-item"):
+            #address_data=item.find_next('span').text
+            #input(print(address_data))
+        """
