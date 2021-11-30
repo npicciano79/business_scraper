@@ -12,7 +12,7 @@ def getData(url):
     #print(f"get data called")
     return BeautifulSoup(page.text,"html.parser")
 
-def scrape_link(data):
+def scrape_categorylink(data):
     #returns links for categories
     links=[]
     for d in data.find('div',class_="row gz-cards gz-directory-cards gz-no-cards").find_all("a"):
@@ -21,67 +21,74 @@ def scrape_link(data):
         #print(f"{lcl_link}")   
     return links
 
+
 def scrape_bus(bus_link):
+    business_data=[]
     #get category name
-    for bus in bus_link:
+    #input(bus_link)
+    for bus in bus_link:    
         #bus link is category link, scrape page for each link/category 
-        #input(print(bus)) 
+        #print(f"bus {bus}")
         new_page=requests.get(bus)
         full_page=BeautifulSoup(new_page.text,"html.parser")
-        #input(print(b_page))
         
         #get category title
         lcl_cat=full_page.find("div",class_="flex-grow-1 gz-pagetitle").find('h1')
         category=str(lcl_cat).strip('<h1>').strip('</')
-        input(category)
+        #input(print(f"category: {category}"))
 
-        #get card link 
-        card_link=full_page.find('div',class_='card-header').find('a')
-        card_link=str(card_link).split('=')[2].split(" ")[0].strip('"')
-        input(card_link)
-        
-        c_page=requests.get(card_link)
-        card_page=BeautifulSoup(c_page.text,"html.parser")
-        input(card_page)
+            
+        #get business card links from category page
+        for i in full_page.find_all('div', class_="card-header"):
+            lcl_cardlink=str(i.find('a')).split("=")[2].split(" ")[0].strip('"')
+            #input(f"_________________\n{lcl_cardlink}\n________________") 
+       
+            c_page=requests.get(lcl_cardlink)
+            card_page=BeautifulSoup(c_page.text,"html.parser")
+            #input(card_page)
 
-        #find business name
-        lcl_name=card_page.find('div',class_="d-flex gz-details-head").text
-        input(lcl_name)
+            #find business name
+            lcl_name=card_page.find('div',class_="d-flex gz-details-head").text
+            #input(lcl_name)
 
-        #find full address
-        lcl_address_full=card_page.find('li',class_="list-group-item gz-card-address").text.splitlines()
-        input(lcl_address_full)
+            #find full address
+            lcl_address_full=card_page.find('li',class_="list-group-item gz-card-address").text.splitlines()
+            #input(lcl_address_full)
 
-        #split full_address to street, city zip
-        for i,val in enumerate(lcl_address_full):
-            if i==3:
-                lcl_street=val
-            if i==4:
-                lcl_city=val
-            if i==6:
-                lcl_zip=val
+            #split full_address to street, city zip
+            for i,val in enumerate(lcl_address_full):
+                if i==3:
+                    lcl_street=val
+                if i==4:
+                    lcl_city=val
+                if i==6:
+                    lcl_zip=val
+            #print(f"street: {lcl_street} city {lcl_city}  zip {lcl_zip}")
 
-        print(f"street: {lcl_street} city {lcl_city}  zip {lcl_zip}")
+            lcl_phone=card_page.find('li',class_="list-group-item gz-card-phone").text
+            #input(lcl_phone)
 
-        lcl_phone=card_page.find('li',class_="list-group-item gz-card-phone").text
-        input(lcl_phone)
+            lcl_fax=card_page.find('li',class_='list-group-item gz-card-fax').text
+            #input(lcl_fax)
 
-        lcl_fax=card_page.find('li',class_='list-group-item gz-card-fax').text
-        input(lcl_fax)
+            lcl_web=card_page.find('li',class_="list-group-item gz-card-website").find('a').text
+            #input(lcl_web)
 
-        lcl_web=card_page.find('li',class_="list-group-item gz-card-website").find('a').text
-        input(lcl_web)
+            lcl_about=card_page.find('div',class_="row gz-details-about").text
+            #input(lcl_about)
 
-        lcl_about=card_page.find('div',class_="row gz-details-about").text
-        input(lcl_about)
+            lcl_contact=card_page.find('div',class_="gz-member-repname").text
+            #input(lcl_contact)
 
-        lcl_contact=card_page.find('div',class_="gz-member-repname").text
-        input(lcl_contact)
-        
+            lcl_businessData=[category,lcl_name,lcl_street,lcl_city,lcl_zip,lcl_phone,lcl_fax,lcl_web,lcl_about,lcl_contact]
 
-        
-        
-        
+            #business_data.append(category,lcl_name,lcl_street,lcl_city,lcl_zip,lcl_phone,lcl_fax,lcl_web,lcl_about,lcl_contact)
+            input(f"business data: {lcl_businessData}")
+                
+
+                
+                
+                
 
 
 
@@ -94,7 +101,7 @@ def main():
     url=f'https://www.gnhcc.com/list'
     data=getData(url)
     #print(f"Data: {data}")
-    bus_link=scrape_link(data)
+    bus_link=scrape_categorylink(data)
     #print(f"{bus_link} bus link")
     scrape_bus(bus_link)
      
