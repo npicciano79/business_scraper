@@ -66,14 +66,27 @@ def scrape_bus(bus_link):
             #print(f"street: {lcl_street} city {lcl_city}  zip {lcl_zip}")
 
             #add try/except for phone and fax
-            lcl_phone=card_page.find('li',class_="list-group-item gz-card-phone").text
-            #input(lcl_phone)
+            try:
+                lcl_phone=card_page.find('li',class_="list-group-item gz-card-phone").text
+                #input(lcl_phone)
+            except Exception as e:
+                input(f"Phone number not found, error: {e}")
+                lcl_phone=None
 
-            lcl_fax=card_page.find('li',class_='list-group-item gz-card-fax').text
-            #input(lcl_fax)
+            try:
+                lcl_fax=card_page.find('li',class_='list-group-item gz-card-fax').text
+                #input(lcl_fax)
+            except Exception as e:
+                input(f"fax number not found, error: {e}")
+                lcl_fax=None
 
-            lcl_web=card_page.find('li',class_="list-group-item gz-card-website").find('a').text
-            #input(lcl_web)
+            try: 
+                lcl_web=card_page.find('li',class_="list-group-item gz-card-website").find('a').text
+                #input(lcl_web)
+            except Exception as e:
+                input(f"web not found, error: {e}")
+                lcl_web=None
+
 
             lcl_about=card_page.find('div',class_="row gz-details-about").text
             #input(lcl_about)
