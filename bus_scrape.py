@@ -65,6 +65,7 @@ def scrape_bus(bus_link):
                     lcl_zip=val
             #print(f"street: {lcl_street} city {lcl_city}  zip {lcl_zip}")
 
+            #add try/except for phone and fax
             lcl_phone=card_page.find('li',class_="list-group-item gz-card-phone").text
             #input(lcl_phone)
 
