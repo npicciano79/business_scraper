@@ -49,6 +49,7 @@ def scrape_bus(bus_link):
 
             #find business name
             lcl_name=card_page.find('div',class_="d-flex gz-details-head").text
+            lcl_name=lcl_name.replace('\n'," ")
             #input(lcl_name)
 
             #find full address
@@ -68,36 +69,46 @@ def scrape_bus(bus_link):
             #add try/except for phone and fax
             try:
                 lcl_phone=card_page.find('li',class_="list-group-item gz-card-phone").text
+                lcl_phone=lcl_phone.replace('\n'," ")
                 #input(lcl_phone)
             except Exception as e:
-                input(f"Phone number not found, error: {e}")
+                #input(f"Phone number not found, error: {e}")
                 lcl_phone=None
 
             try:
                 lcl_fax=card_page.find('li',class_='list-group-item gz-card-fax').text
+                lcl_fax=lcl_fax.replace("\n"," ")
                 #input(lcl_fax)
             except Exception as e:
-                input(f"fax number not found, error: {e}")
+                #input(f"fax number not found, error: {e}")
                 lcl_fax=None
 
             try: 
                 lcl_web=card_page.find('li',class_="list-group-item gz-card-website").find('a').text
                 #input(lcl_web)
             except Exception as e:
-                input(f"web not found, error: {e}")
+                #input(f"web not found, error: {e}")
                 lcl_web=None
 
+            try:
+                lcl_about=card_page.find('div',class_="row gz-details-about").text
+                lcl_about-lcl_about.replace("\n"," ")
+                #input(lcl_about)
+            except Exception as e:
+                #input(f"about not found, error: {e}")
+                lcl_about=None
 
-            lcl_about=card_page.find('div',class_="row gz-details-about").text
-            #input(lcl_about)
-
-            lcl_contact=card_page.find('div',class_="gz-member-repname").text
-            #input(lcl_contact)
+            try:
+                lcl_contact=card_page.find('div',class_="gz-member-repname").text
+                lcl_contact=lcl_contact.replace('\n'," ")
+                #input(lcl_contact)
+            except Exception as e:
+                #input(f"contact not found, error: {e}")
+                lcl_contact=None   
 
             lcl_businessData=[category,lcl_name,lcl_street,lcl_city,lcl_zip,lcl_phone,lcl_fax,lcl_web,lcl_about,lcl_contact]
-
-            #business_data.append(category,lcl_name,lcl_street,lcl_city,lcl_zip,lcl_phone,lcl_fax,lcl_web,lcl_about,lcl_contact)
-            input(f"business data: {lcl_businessData}")
+            business_data.append(lcl_businessData)
+            input(f"business data: {business_data}")
                 
 
                 
