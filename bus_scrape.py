@@ -54,21 +54,26 @@ def scrape_bus(bus_link):
             #input(f"{card_page} \n {lcl_name} lcl_name")
 
             #find full address
+            address_check=True
             try:
                 lcl_address_full=card_page.find('li',class_="list-group-item gz-card-address").text.splitlines()
                 #input(lcl_address_full)
             except Exception as e:
-                lcl_address_full=None
-
+                address_check=False
+            
             #split full_address to street, city zip
-            for i,val in enumerate(lcl_address_full):
-                if i==3:
-                    lcl_street=val
-                if i==4:
-                    lcl_city=val
-                if i==6:
-                    lcl_zip=val
-            #print(f"street: {lcl_street} city {lcl_city}  zip {lcl_zip}")
+            if address_check==True:
+                for i,val in enumerate(lcl_address_full):
+                    if i==3:
+                        lcl_street=val
+                    if i==4:
+                        lcl_city=val
+                    if i==6:
+                        lcl_zip=val
+                #print(f"street: {lcl_street} city {lcl_city}  zip {lcl_zip}")
+            else:
+                lcl_zip=lcl_city=lcl_street=None
+
 
             #add try/except for phone and fax
             try:
