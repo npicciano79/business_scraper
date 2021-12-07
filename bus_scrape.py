@@ -24,6 +24,7 @@ def scrape_categorylink(data):
 
 def scrape_bus(bus_link):
     business_data=[]
+    count=1
     #get category name
     #input(bus_link)
     for bus in bus_link:    
@@ -34,7 +35,7 @@ def scrape_bus(bus_link):
         
         #get category title
         lcl_cat=full_page.find("div",class_="flex-grow-1 gz-pagetitle").find('h1')
-        category=str(lcl_cat).strip('<h1>').strip('</')
+        category=str(lcl_cat).strip('<h1>').strip('</').strip("'")
         #input(print(f"category: {category}"))
 
             
@@ -49,12 +50,15 @@ def scrape_bus(bus_link):
 
             #find business name
             lcl_name=card_page.find('div',class_="d-flex gz-details-head").text
-            lcl_name=lcl_name.replace('\n'," ")
-            #input(lcl_name)
+            lcl_name=lcl_name.replace('\n'," ").strip("'")
+            #input(f"{card_page} \n {lcl_name} lcl_name")
 
             #find full address
-            lcl_address_full=card_page.find('li',class_="list-group-item gz-card-address").text.splitlines()
-            #input(lcl_address_full)
+            try:
+                lcl_address_full=card_page.find('li',class_="list-group-item gz-card-address").text.splitlines()
+                #input(lcl_address_full)
+            except Exception as e:
+                lcl_address_full=None
 
             #split full_address to street, city zip
             for i,val in enumerate(lcl_address_full):
@@ -106,9 +110,10 @@ def scrape_bus(bus_link):
                 #input(f"contact not found, error: {e}")
                 lcl_contact=None   
 
-            lcl_businessData=[category,lcl_name,lcl_street,lcl_city,lcl_zip,lcl_phone,lcl_fax,lcl_web,lcl_about,lcl_contact]
+            lcl_businessData=[count,category,lcl_name,lcl_street,lcl_city,lcl_zip,lcl_phone,lcl_fax,lcl_web,lcl_about,lcl_contact]
             business_data.append(lcl_businessData)
-            input(f"business data: {business_data}")
+            count+=1
+            print(f"business data: {business_data}")
                 
 
                 
@@ -171,10 +176,6 @@ if __name__=="__main__":
 
 
 
-"""
-
-
-"""
         find address
         lcl_address=card_page.find('span',class_="gz-street-address").text
         input(print(lcl_address))
@@ -190,4 +191,4 @@ if __name__=="__main__":
         #for item in card_page.find_all('li',class_="list-group-item"):
             #address_data=item.find_next('span').text
             #input(print(address_data))
-        """
+"""
