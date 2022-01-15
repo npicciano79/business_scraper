@@ -56,9 +56,11 @@ def scrape_bus(bus_link):
             try:
                 lcl_name=card_page.find('div',class_="d-flex gz-details-head").text
                 lcl_name=lcl_name.replace('\n'," ").strip("'")
+                lcl_name=lcl_name.replace(' '' '," ")
                 #input(f"{card_page} \n {lcl_name} lcl_name")
             except Exception as e:
-                input(f"error: {e}")
+                lcl_name=None
+                #input(f"error: {e}")
 
 
             #find full address
@@ -104,16 +106,18 @@ def scrape_bus(bus_link):
 
             try: 
                 lcl_web=card_page.find('li',class_="list-group-item gz-card-website").find('a')
-                lcl_web=lcl_web.split('=')
+                lcl_web=str(lcl_web).split('=')[2].split(" ")[0]
+                lcl_web=lcl_web.replace('"'," ")
                 input(f"website: {lcl_web}")
             except Exception as e:
-                input(f"web not found, error: {e}")
+                #input(f"web not found, error: {e}")
                 lcl_web=None
-"""
+
             try:
                 lcl_about=card_page.find('div',class_="row gz-details-about").text
-                lcl_about-lcl_about.replace("\n"," ")
-                #input(lcl_about)
+                lcl_about=lcl_about.replace("\n"," ")
+                lcl_about=lcl_about.split("Us ")[1]
+                #input(f"about: {lcl_about}")
             except Exception as e:
                 #input(f"about not found, error: {e}")
                 lcl_about=None
@@ -121,26 +125,21 @@ def scrape_bus(bus_link):
             try:
                 lcl_contact=card_page.find('div',class_="gz-member-repname").text
                 lcl_contact=lcl_contact.replace('\n'," ")
-                #input(lcl_contact)
+                #input(f"contact: {lcl_contact}")
             except Exception as e:
                 #input(f"contact not found, error: {e}")
                 lcl_contact=None   
 
+
+            #clean data
+            
             lcl_businessData=[count,category,lcl_name,lcl_street,lcl_city,lcl_zip,lcl_phone,lcl_fax,lcl_web,lcl_about,lcl_contact]
             business_data.append(lcl_businessData)
             count+=1
             print(f"business data: {business_data}")
+                   
+          
                 
-
-                
-"""              
-                
-
-
-
-
-
-
 
 
 def main():
