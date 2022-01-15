@@ -1,5 +1,6 @@
 #scrape business listing from new haven commerce website
 #https://www.gnhcc.com/list
+# & C:/Users/npicc/Documents/python/python.exe c:/Users/npicc/Documents/Coding/projects/business_scraper/bus_scrape.py
 
 from bs4 import BeautifulSoup
 import csv
@@ -30,30 +31,38 @@ def scrape_bus(bus_link):
     for bus in bus_link:    
         #bus link is category link, scrape page for each link/category 
         #print(f"bus {bus}")
-        new_page=requests.get(bus)
-        full_page=BeautifulSoup(new_page.text,"html.parser")
-        
+        full_page=getData(bus)
+  
+        #new_page=requests.get(bus)
+        #full_page=BeautifulSoup(new_page.text,"html.parser")
+        #input(f"{full_page}:  full page  {bus} bus")
+
         #get category title
         lcl_cat=full_page.find("div",class_="flex-grow-1 gz-pagetitle").find('h1')
         category=str(lcl_cat).strip('<h1>').strip('</').strip("'")
         #input(print(f"category: {category}"))
 
-            
+
         #get business card links from category page
         for i in full_page.find_all('div', class_="card-header"):
             lcl_cardlink=str(i.find('a')).split("=")[2].split(" ")[0].strip('"')
-            #input(f"_________________\n{lcl_cardlink}\n________________") 
-       
+            #input(f"_________________\n{lcl_cardlink}\n  {category}________________") 
+     
             c_page=requests.get(lcl_cardlink)
             card_page=BeautifulSoup(c_page.text,"html.parser")
-            #input(card_page)
+            #input(f"{card_page}  \n{lcl_cardlink}")
 
             #find business name
-            lcl_name=card_page.find('div',class_="d-flex gz-details-head").text
-            lcl_name=lcl_name.replace('\n'," ").strip("'")
-            #input(f"{card_page} \n {lcl_name} lcl_name")
+            try:
+                lcl_name=card_page.find('div',class_="d-flex gz-details-head").text
+                lcl_name=lcl_name.replace('\n'," ").strip("'")
+                #input(f"{card_page} \n {lcl_name} lcl_name")
+            except Exception as e:
+                input(f"error: {e}")
+
 
             #find full address
+            
             address_check=True
             try:
                 lcl_address_full=card_page.find('li',class_="list-group-item gz-card-address").text.splitlines()
@@ -70,16 +79,16 @@ def scrape_bus(bus_link):
                         lcl_city=val
                     if i==6:
                         lcl_zip=val
-                #print(f"street: {lcl_street} city {lcl_city}  zip {lcl_zip}")
+                
             else:
                 lcl_zip=lcl_city=lcl_street=None
-
+            #print(f"name: {lcl_cardlink} street: {lcl_street} city {lcl_city}  zip {lcl_zip}")
 
             #add try/except for phone and fax
             try:
                 lcl_phone=card_page.find('li',class_="list-group-item gz-card-phone").text
                 lcl_phone=lcl_phone.replace('\n'," ")
-                #input(lcl_phone)
+                #print(lcl_phone)
             except Exception as e:
                 #input(f"Phone number not found, error: {e}")
                 lcl_phone=None
@@ -87,18 +96,20 @@ def scrape_bus(bus_link):
             try:
                 lcl_fax=card_page.find('li',class_='list-group-item gz-card-fax').text
                 lcl_fax=lcl_fax.replace("\n"," ")
-                #input(lcl_fax)
+                #input(f"fax: {lcl_fax}")
             except Exception as e:
                 #input(f"fax number not found, error: {e}")
                 lcl_fax=None
 
-            try: 
-                lcl_web=card_page.find('li',class_="list-group-item gz-card-website").find('a').text
-                #input(lcl_web)
-            except Exception as e:
-                #input(f"web not found, error: {e}")
-                lcl_web=None
 
+            try: 
+                lcl_web=card_page.find('li',class_="list-group-item gz-card-website").find('a')
+                lcl_web=lcl_web.split('=')
+                input(f"website: {lcl_web}")
+            except Exception as e:
+                input(f"web not found, error: {e}")
+                lcl_web=None
+"""
             try:
                 lcl_about=card_page.find('div',class_="row gz-details-about").text
                 lcl_about-lcl_about.replace("\n"," ")
@@ -122,7 +133,7 @@ def scrape_bus(bus_link):
                 
 
                 
-                
+"""              
                 
 
 
