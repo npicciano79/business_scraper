@@ -140,20 +140,20 @@ def scrape_bus(bus_link):
 
 
             lcl_businessData=[count,category,lcl_name,lcl_street,lcl_city,lcl_zip,lcl_phone,lcl_fax,lcl_web,lcl_about,lcl_contact]
-            print(f"{count} business {lcl_name} category {category} appended")
+            #print(f"{count} business {lcl_name} category {category} appended")
             business_data.append(lcl_businessData)
             count+=1
             
     print("business_data returned")
     return business_data
 
-def createCSV(business_data):
+def createCSV(testval):
     print("Writing CSV")
-    header=['index','business name','address','phone','fax','website','about','contact']
+    header=['index','name','address','phone','fax','website','about','contact']
     with open('businessCSV.csv','w',newline='')as f:
         writer=csv.writer(f,delimiter=' ')
         writer.writerow(header)
-        for bus in business_data:
+        for bus in testval:
             writer.writerow(bus)
 
 
@@ -163,14 +163,16 @@ def createCSV(business_data):
 
 
 def main():
+    testval=[['1','2','3','4','5','6','7','8'],['121','222','444','666','443','000','rrr','bbb']]
+
     url=f'https://www.gnhcc.com/list'
-    data=getData(url)
+    #data=getData(url)
     #print(f"Data: {data}")
-    bus_link=scrape_categorylink(data)
+    #bus_link=scrape_categorylink(data)
     #print(f"{bus_link} bus link")
-    business_data=scrape_bus(bus_link)
-    createCSV(business_data)
-     
+    #business_data=scrape_bus(bus_link)
+    #createCSV(business_data)
+    createCSV(testval)
 
 
 
