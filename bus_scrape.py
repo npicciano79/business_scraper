@@ -45,12 +45,17 @@ def scrape_bus(bus_link):
 
         #get business card links from category page
         for i in full_page.find_all('div', class_="card-header"):
-            lcl_cardlink=str(i.find('a')).split("=")[2].split(" ")[0].strip('"')
-            #input(f"_________________\n{lcl_cardlink}\n  {category}________________") 
+            try:
+                lcl_cardlink=str(i.find('a')).split("=")[2].split(" ")[0].strip('"')
+                #input(f"_________________\n{lcl_cardlink}\n  {category}________________") 
      
-            c_page=requests.get(lcl_cardlink)
-            card_page=BeautifulSoup(c_page.text,"html.parser")
-            #input(f"{card_page}  \n{lcl_cardlink}")
+                c_page=requests.get(lcl_cardlink)
+                card_page=BeautifulSoup(c_page.text,"html.parser")
+                #input(f"{card_page}  \n{lcl_cardlink}")
+            except Exception as e:
+                print(f"{e} No link available")
+                continue
+
 
             #find business name
             try:
@@ -84,7 +89,7 @@ def scrape_bus(bus_link):
                 
             else:
                 lcl_zip=lcl_city=lcl_street=None
-            #print(f"name: {lcl_cardlink} street: {lcl_street} city {lcl_city}  zip {lcl_zip}")
+            #print(f"street: {lcl_street} city {lcl_city}  zip {lcl_zip}")
 
             #add try/except for phone and fax
             try:
@@ -103,16 +108,16 @@ def scrape_bus(bus_link):
                 #input(f"fax number not found, error: {e}")
                 lcl_fax=None
 
-
+            #try/except for website
             try: 
                 lcl_web=card_page.find('li',class_="list-group-item gz-card-website").find('a')
                 lcl_web=str(lcl_web).split('=')[2].split(" ")[0]
                 lcl_web=lcl_web.replace('"'," ")
-                input(f"website: {lcl_web}")
+                #input(f"website: {lcl_web}")
             except Exception as e:
                 #input(f"web not found, error: {e}")
                 lcl_web=None
-
+            #try/except for about/info
             try:
                 lcl_about=card_page.find('div',class_="row gz-details-about").text
                 lcl_about=lcl_about.replace("\n"," ")
@@ -121,7 +126,7 @@ def scrape_bus(bus_link):
             except Exception as e:
                 #input(f"about not found, error: {e}")
                 lcl_about=None
-
+            #try/except for contact person
             try:
                 lcl_contact=card_page.find('div',class_="gz-member-repname").text
                 lcl_contact=lcl_contact.replace('\n'," ")
@@ -132,13 +137,28 @@ def scrape_bus(bus_link):
 
 
             #clean data
-            
+
+
             lcl_businessData=[count,category,lcl_name,lcl_street,lcl_city,lcl_zip,lcl_phone,lcl_fax,lcl_web,lcl_about,lcl_contact]
+            print(f"{count} business {lcl_name} category {category} appended")
             business_data.append(lcl_businessData)
             count+=1
-            print(f"business data: {business_data}")
-                   
-          
+            
+    print("business_data returned")
+    return business_data
+
+def createCSV(business_data):
+    print("Writing CSV")
+    header=['index','business name','address','phone','fax','website','about','contact']
+    with open('businessCSV.csv','w',newline='')as f:
+        writer=csv.writer(f,delimiter=' ')
+        writer.writerow(header)
+        for bus in business_data:
+            writer.writerow(bus)
+
+
+
+        
                 
 
 
@@ -148,7 +168,8 @@ def main():
     #print(f"Data: {data}")
     bus_link=scrape_categorylink(data)
     #print(f"{bus_link} bus link")
-    scrape_bus(bus_link)
+    business_data=scrape_bus(bus_link)
+    createCSV(business_data)
      
 
 
