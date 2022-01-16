@@ -6,7 +6,8 @@ from bs4 import BeautifulSoup
 import csv
 import requests
 import re
-
+from prettytable import PrettyTable
+import xlsxwriter
 
 def getData(url):
     page=requests.get(url)
@@ -25,9 +26,11 @@ def scrape_categorylink(data):
 
 def scrape_bus(bus_link):
     business_data=[]
+    category_len=[]
     count=1
     #get category name
     #input(bus_link)
+    catlen=namelen=streetlen=citylen=phonelen=faxlen=ziplen=weblen=aboutlen=contactlen=0
     for bus in bus_link:    
         #bus link is category link, scrape page for each link/category 
         #print(f"bus {bus}")
@@ -38,9 +41,12 @@ def scrape_bus(bus_link):
         #input(f"{full_page}:  full page  {bus} bus")
 
         #get category title
+        
         lcl_cat=full_page.find("div",class_="flex-grow-1 gz-pagetitle").find('h1')
         category=str(lcl_cat).strip('<h1>').strip('</').strip("'")
-        #input(print(f"category: {category}"))
+        catlen=max(catlen,len(category))
+
+        #print(f"category: {category} cat len{catlen}")
 
 
         #get business card links from category page
@@ -62,6 +68,7 @@ def scrape_bus(bus_link):
                 lcl_name=card_page.find('div',class_="d-flex gz-details-head").text
                 lcl_name=lcl_name.replace('\n'," ").strip("'")
                 lcl_name=lcl_name.replace(' '' '," ")
+                namelen=max(namelen,len(lcl_name))
                 #input(f"{card_page} \n {lcl_name} lcl_name")
             except Exception as e:
                 lcl_name=None
@@ -82,10 +89,13 @@ def scrape_bus(bus_link):
                 for i,val in enumerate(lcl_address_full):
                     if i==3:
                         lcl_street=val
+                        streetlen=max(streetlen,len(lcl_street))
                     if i==4:
                         lcl_city=val
+                        citylen=max(citylen,len(lcl_city))
                     if i==6:
                         lcl_zip=val
+                        ziplen=max(ziplen,len(lcl_zip))
                 
             else:
                 lcl_zip=lcl_city=lcl_street=None
@@ -95,6 +105,7 @@ def scrape_bus(bus_link):
             try:
                 lcl_phone=card_page.find('li',class_="list-group-item gz-card-phone").text
                 lcl_phone=lcl_phone.replace('\n'," ")
+                phonelen=max(phonelen,len(lcl_phone))
                 #print(lcl_phone)
             except Exception as e:
                 #input(f"Phone number not found, error: {e}")
@@ -103,6 +114,7 @@ def scrape_bus(bus_link):
             try:
                 lcl_fax=card_page.find('li',class_='list-group-item gz-card-fax').text
                 lcl_fax=lcl_fax.replace("\n"," ")
+                faxlen=max(faxlen,len(lcl_fax))
                 #input(f"fax: {lcl_fax}")
             except Exception as e:
                 #input(f"fax number not found, error: {e}")
@@ -113,6 +125,7 @@ def scrape_bus(bus_link):
                 lcl_web=card_page.find('li',class_="list-group-item gz-card-website").find('a')
                 lcl_web=str(lcl_web).split('=')[2].split(" ")[0]
                 lcl_web=lcl_web.replace('"'," ")
+                weblen=max(weblen,len(lcl_web))
                 #input(f"website: {lcl_web}")
             except Exception as e:
                 #input(f"web not found, error: {e}")
@@ -122,6 +135,7 @@ def scrape_bus(bus_link):
                 lcl_about=card_page.find('div',class_="row gz-details-about").text
                 lcl_about=lcl_about.replace("\n"," ")
                 lcl_about=lcl_about.split("Us ")[1]
+                aboutlen=max(aboutlen,len(lcl_about))
                 #input(f"about: {lcl_about}")
             except Exception as e:
                 #input(f"about not found, error: {e}")
@@ -130,6 +144,7 @@ def scrape_bus(bus_link):
             try:
                 lcl_contact=card_page.find('div',class_="gz-member-repname").text
                 lcl_contact=lcl_contact.replace('\n'," ")
+                contactlen=max(contactlen,len(lcl_contact))
                 #input(f"contact: {lcl_contact}")
             except Exception as e:
                 #input(f"contact not found, error: {e}")
@@ -141,38 +156,45 @@ def scrape_bus(bus_link):
 
             lcl_businessData=[count,category,lcl_name,lcl_street,lcl_city,lcl_zip,lcl_phone,lcl_fax,lcl_web,lcl_about,lcl_contact]
             #print(f"{count} business {lcl_name} category {category} appended")
+            category_len=[catlen,namelen,streetlen,citylen,ziplen,phonelen,faxlen,weblen,aboutlen,contactlen]
             business_data.append(lcl_businessData)
             count+=1
-            
+    
     print("business_data returned")
-    return business_data
+    return business_data,category_len
 
-def createCSV(testval):
+
+
+
+
+def createCSV(business_data,category_len):
     print("Writing CSV")
-    header=['index','name','address','phone','fax','website','about','contact']
+    padding="      "
+    header=['index','category'+" "*(category_len[0]-5),'name'+' '*(category_len[1]-4),'street'+' '*(category_len[2]-7),'city'+' '*(category_len[3]-4),'zip'+' '*(category_len[4]-3),'phone'+' '*(category_len[5]-5),'fax'+' '*(category_len[6]-3),'website'+' '*(category_len[7]-7),'about'+' '*(category_len[8]-5),'contact'+' '*(category_len[9]-7))]
     with open('businessCSV.csv','w',newline='')as f:
         writer=csv.writer(f,delimiter=' ')
         writer.writerow(header)
-        for bus in testval:
+        for bus in business_data:
             writer.writerow(bus)
 
+   
 
 
         
-                
+              
 
 
 def main():
-    testval=[['1','2','3','4','5','6','7','8'],['121','222','444','666','443','000','rrr','bbb']]
-
+    
     url=f'https://www.gnhcc.com/list'
-    #data=getData(url)
+    data=getData(url)
     #print(f"Data: {data}")
-    #bus_link=scrape_categorylink(data)
+    bus_link=scrape_categorylink(data)
     #print(f"{bus_link} bus link")
-    #business_data=scrape_bus(bus_link)
-    #createCSV(business_data)
-    createCSV(testval)
+    business_data,category_len=scrape_bus(bus_link)
+    createCSV(business_data,category_len)
+    
+    
 
 
 
