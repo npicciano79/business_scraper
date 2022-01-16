@@ -6,8 +6,6 @@ from bs4 import BeautifulSoup
 import csv
 import requests
 import re
-from prettytable import PrettyTable
-import xlsxwriter
 
 def getData(url):
     page=requests.get(url)
@@ -155,7 +153,7 @@ def scrape_bus(bus_link):
 
 
             lcl_businessData=[count,category,lcl_name,lcl_street,lcl_city,lcl_zip,lcl_phone,lcl_fax,lcl_web,lcl_about,lcl_contact]
-            #print(f"{count} business {lcl_name} category {category} appended")
+            print(f"{count} business {lcl_name} category {category} appended")
             category_len=[catlen,namelen,streetlen,citylen,ziplen,phonelen,faxlen,weblen,aboutlen,contactlen]
             business_data.append(lcl_businessData)
             count+=1
@@ -170,7 +168,7 @@ def scrape_bus(bus_link):
 def createCSV(business_data,category_len):
     print("Writing CSV")
     padding="      "
-    header=['index','category'+" "*(category_len[0]-5),'name'+' '*(category_len[1]-4),'street'+' '*(category_len[2]-7),'city'+' '*(category_len[3]-4),'zip'+' '*(category_len[4]-3),'phone'+' '*(category_len[5]-5),'fax'+' '*(category_len[6]-3),'website'+' '*(category_len[7]-7),'about'+' '*(category_len[8]-5),'contact'+' '*(category_len[9]-7))]
+    header=['index','category'+" "*(category_len[0]-5),'name'+' '*(category_len[1]-4),'street'+' '*(category_len[2]-7),'city'+' '*(category_len[3]-4),'zip'+' '*(category_len[4]-3),'phone'+' '*(category_len[5]-5),'fax'+' '*(category_len[6]-3),'website'+' '*(category_len[7]-7),'about'+' '*(category_len[8]-5),'contact'+' '*(category_len[9]-7)]
     with open('businessCSV.csv','w',newline='')as f:
         writer=csv.writer(f,delimiter=' ')
         writer.writerow(header)
@@ -207,48 +205,3 @@ if __name__=="__main__":
 
 
 
-"""
-
-
-        #get business name
-        try:
-            lcl_name=b_page.find('span',class_='gz-img-placeholder').text
-            input(print(f"name: {lcl_name}"))
-        except Exception as e:
-            print("Name not found",e)
-
-        #get business address
-        lcl_address=b_page.find('span',class_='gz-street-address').text
-        input(print(f"address: {lcl_address}"))
-
-        #get city
-        lcl_city=b_page.find("span",class_="gz-address-city").text
-        input(print(f"city: {lcl_city}"))
-
-        #get zip
-        lcl_zip=b_page.find("div",itemprop="citystatezip")
-        lcl_zip=str(lcl_zip).split('<span>',3)[2].split('<')[0]
-        input(print(f"zip: {lcl_zip}"))
-
-        #get phone
-        lcl_phone=b_page.find('li', class_="list-group-item gz-card-phone").text
-        input(print(f"phone {lcl_phone}"))
-
-
-
-        find address
-        lcl_address=card_page.find('span',class_="gz-street-address").text
-        input(print(lcl_address))
-
-        #find city
-        lcl_city=card_page.find('span',class_="gz-address-city").text
-        input(print(lcl_city))
-
-        #find zipcode
-        lcl_zip=card_page.find_next('span', class_="gz-address-city")
-        input(print(lcl_zip))
-
-        #for item in card_page.find_all('li',class_="list-group-item"):
-            #address_data=item.find_next('span').text
-            #input(print(address_data))
-"""
