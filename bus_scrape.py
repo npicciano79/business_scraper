@@ -41,10 +41,10 @@ def scrape_bus(bus_link):
         #get category title
         
         lcl_cat=full_page.find("div",class_="flex-grow-1 gz-pagetitle").find('h1')
-        category=str(lcl_cat).strip('<h1>').strip('</').strip("'")
+        category=str(lcl_cat).strip('<h1>').strip('</').strip("'").replace(","," ")
         catlen=max(catlen,len(category))
 
-        #print(f"category: {category} cat len{catlen}")
+        print(f"category: {category} cat len{catlen}")
 
 
         #get business card links from category page
@@ -154,7 +154,8 @@ def scrape_bus(bus_link):
 
             lcl_businessData=[count,category,lcl_name,lcl_street,lcl_city,lcl_zip,lcl_phone,lcl_fax,lcl_web,lcl_about,lcl_contact]
             print(f"{count} business {lcl_name} category {category} appended")
-            category_len=[catlen,namelen,streetlen,citylen,ziplen,phonelen,faxlen,weblen,aboutlen,contactlen]
+            indexlen=4
+            category_len=[indexlen,catlen,namelen,streetlen,citylen,ziplen,phonelen,faxlen,weblen,aboutlen,contactlen]
             business_data.append(lcl_businessData)
             count+=1
     
@@ -162,35 +163,52 @@ def scrape_bus(bus_link):
     return business_data,category_len
 
 
+def padding(category_len):
+    space=[]
+    header=['index','category','name','street','city','zip','phone','fax','website','about','contact']
+    for i in range(0,len(category_len)):
+        templen=round(category_len[i]/2)
+        space.append('_'*templen+header[i]+'_'*templen)
+    
+    
+    
+
+    
+    print("Calculating header space")
+    return space
 
 
-
-def createCSV(business_data,category_len):
+def createCSV(business_data,space):
     print("Writing CSV")
     padding="      "
-    header=['index','category'+" "*(category_len[0]-5),'name'+' '*(category_len[1]-4),'street'+' '*(category_len[2]-7),'city'+' '*(category_len[3]-4),'zip'+' '*(category_len[4]-3),'phone'+' '*(category_len[5]-5),'fax'+' '*(category_len[6]-3),'website'+' '*(category_len[7]-7),'about'+' '*(category_len[8]-5),'contact'+' '*(category_len[9]-7)]
+    #header=['index','category'+" "*(category_len[0]-5),'name'+' '*(category_len[1]-4),'street'+' '*(category_len[2]-7),'city'+' '*(category_len[3]-4),'zip'+' '*(category_len[4]-3),'phone'+' '*(category_len[5]-5),'fax'+' '*(category_len[6]-3),'website'+' '*(category_len[7]-7),'about'+' '*(category_len[8]-5),'contact'+' '*(category_len[9]-7)]
     with open('businessCSV.csv','w',newline='')as f:
         writer=csv.writer(f,delimiter=' ')
-        writer.writerow(header)
+        writer.writerow(space)
         for bus in business_data:
             writer.writerow(bus)
+    
+    print("CSV complete")
 
    
 
 
         
-              
+            
 
 
 def main():
-    
+    #category_len=[40,40,40,40,40,40,40,40,40,40]
+    #business_data=[[210,'test','test','test','test','test','test','test','test','test','test'],[210,'test','test','test','test','test','test','test','test','test','test']]
     url=f'https://www.gnhcc.com/list'
     data=getData(url)
     #print(f"Data: {data}")
     bus_link=scrape_categorylink(data)
     #print(f"{bus_link} bus link")
     business_data,category_len=scrape_bus(bus_link)
-    createCSV(business_data,category_len)
+    space=padding(category_len)
+    createCSV(business_data,space)
+    
     
     
 
