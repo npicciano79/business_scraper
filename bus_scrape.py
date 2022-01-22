@@ -169,11 +169,6 @@ def padding(category_len):
     for i in range(0,len(category_len)):
         templen=round(category_len[i]/2)
         space.append('_'*templen+header[i]+'_'*templen)
-    
-    
-    
-
-    
     print("Calculating header space")
     return space
 
@@ -181,25 +176,19 @@ def padding(category_len):
 def createCSV(business_data,space):
     print("Writing CSV")
     padding="      "
-    #header=['index','category'+" "*(category_len[0]-5),'name'+' '*(category_len[1]-4),'street'+' '*(category_len[2]-7),'city'+' '*(category_len[3]-4),'zip'+' '*(category_len[4]-3),'phone'+' '*(category_len[5]-5),'fax'+' '*(category_len[6]-3),'website'+' '*(category_len[7]-7),'about'+' '*(category_len[8]-5),'contact'+' '*(category_len[9]-7)]
+    #header=[' index ',' category ',' name ',' street ',' city ',' zip ',' phone ',' fax ',' website ',' about ',' contact ']
     with open('businessCSV.csv','w',newline='')as f:
-        writer=csv.writer(f,delimiter=' ')
+        writer=csv.writer(f,delimiter=',',escapechar=' ',quoting=csv.QUOTE_NONE)
         writer.writerow(space)
         for bus in business_data:
             writer.writerow(bus)
     
     print("CSV complete")
 
-   
-
-
-        
-            
 
 
 def main():
-    #category_len=[40,40,40,40,40,40,40,40,40,40]
-    #business_data=[[210,'test','test','test','test','test','test','test','test','test','test'],[210,'test','test','test','test','test','test','test','test','test','test']]
+    #business_data=[['assaas','assaaas','ddddddddddddddddddddddddddddddddddddddddd','eeeeee','ffffff','ggggg','ppppp','wwwww','mmmmm','ggggg','vvvvvvv'],['assaas','assaaas','dddddd','eeeeee','ffffff','ggggg','ppppp','wwwww','mmmmmmmmmmmmmmmmmmmmm','ggggg','vvvvvvv']]
     url=f'https://www.gnhcc.com/list'
     data=getData(url)
     #print(f"Data: {data}")
